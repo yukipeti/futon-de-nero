@@ -1,9 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+const {Client, Collection, Events, GatewayIntentBits} = require('discord.js');
+const {token} = require('./config.json');
+const responseMoukon = require("./functions/responseMoukon.js")
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]});
 client.commands = new Collection();
 
 // commandsフォルダから、.jsで終わるファイルのみを取得
@@ -38,8 +39,12 @@ client.on(Events.InteractionCreate, async interaction => {
         await command.execute(interaction);
     } catch (error) {
         console.error(error);
-        await interaction.reply({ content: 'コマンドを実行中にエラーが発生しました。', ephemeral: true });
+        await interaction.reply({content: 'コマンドを実行中にエラーが発生しました。', ephemeral: true});
     }
+});
+//messageの読み取り
+client.on("messageCreate", async (message) => {
+    responseMoukon(message);
 });
 
 client.once(Events.ClientReady, c => {
