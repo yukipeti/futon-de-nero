@@ -2,7 +2,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {Client, Collection, Events, GatewayIntentBits} = require('discord.js');
 const {token} = require('./config.json');
-const responseMoukon = require("./functions/responseMoukon.js")
+const responseMoukon = require("./functions/responseMoukon.js");
+const despairWakeup = require("./functions/despair-wakeup.js")
 
 const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]});
 client.commands = new Collection();
@@ -44,7 +45,8 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 //messageの読み取り
 client.on("messageCreate", async (message) => {
-    responseMoukon(message);
+    await responseMoukon(message);
+    await despairWakeup(message);
 });
 
 client.once(Events.ClientReady, c => {
